@@ -28,6 +28,19 @@ float lastX = 400, lastY = 300;                       // Última posição do mo
 bool firstMouse = true;                               // Para ajustar a posição inicial do mouse
 bool ignoreMouseEvent = false;                        // Controle de eventos do mouse
 
+void init(void);
+void display(void);
+void keyboard(unsigned char key, int x, int y);
+void mouse(int button, int state, int x, int y);
+void mouseMotion(int xpos, int ypos);
+void drawCrosshair();
+void updateCameraDirection();
+void drawFloor();
+void renderCrosshair();
+void drawBullets();
+void updateBullets();
+
+
 // Estrutura para representar uma bala
 struct Bullet {
     float x, y, z;
@@ -196,6 +209,11 @@ void display() {
 //     glutSwapBuffers();
 // }
 
+// Função para atualizar o jogo continuamente
+void idle() {
+    updateBullets();       // Atualizar a posição das balas
+    glutPostRedisplay();   // Redesenhar a cena
+}
 
 // Configurações iniciais
 void init() {
@@ -212,7 +230,7 @@ void init() {
     // glutWarpPointer(400, 300);
 }
 
-// Configura a janela e inicia o loop
+// Função principal
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -223,8 +241,9 @@ int main(int argc, char** argv) {
     glutFullScreen();
     glutKeyboardFunc(keyboard);
     glutDisplayFunc(display);
-    glutPassiveMotionFunc(mouseMotion);
-    glutMouseFunc(mouse); // Registrar eventos de clique do mouse
+    glutPassiveMotionFunc(mouseMotion); // Registrar movimento do mouse
+    glutMouseFunc(mouse);               // Registrar cliques do mouse
+    glutIdleFunc(idle);                 // Atualizar continuamente
 
     glutMainLoop();
     return 0;
